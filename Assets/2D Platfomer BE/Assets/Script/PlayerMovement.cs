@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement; // <--- Untuk restart scene
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,12 +11,12 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 8f;
     public float jumpForce = 10f;
 
-    public CoinManager cm; // <- pastikan ini sudah diisi di Inspector
+    public CoinManager cm; // Pastikan ini di-assign di Inspector
 
     private Rigidbody2D rb;
     private Animator anim;
     private SpriteRenderer sprite;
-    private PlayerController playerController; // PlayerInputActions
+    private PlayerController playerController;
 
     private float mobileInputX = 0f;
     private Vector2 moveInput;
@@ -26,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump Settings")]
     [SerializeField] private LayerMask jumpableGround;
     private BoxCollider2D coll;
+
+    [Header("Death Settings")]
+    public float fallThreshold = -10f; // Y batas jatuh, restart jika dilewati
 
     private void Awake()
     {
@@ -52,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        // Input: PC atau Mobile
         if (Application.isMobilePlatform)
         {
             moveInput = new Vector2(mobileInputX, 0f);
@@ -59,6 +64,12 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             moveInput = playerController.Movement.Move.ReadValue<Vector2>();
+        }
+
+        // Cek apakah jatuh dari platform
+        if (transform.position.y < fallThreshold)
+        {
+            RestartLevel();
         }
     }
 
@@ -145,13 +156,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // ?? Fungsi Trigger Coin
+    // Fungsi Trigger untuk Coin
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Coin"))
         {
-            Destroy(other.gameObject);
-            cm.coinCount++;
+            Destroy(other.gameObject);      // Hancurkan coin
+            cm.coinCount++;                 // Tambah jumlah coin
         }
+    }
+
+    // Restart level saat jatuh
+    private void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
