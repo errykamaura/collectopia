@@ -161,8 +161,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Coin"))
         {
-            Destroy(other.gameObject);      // Hancurkan coin
-            cm.coinCount++;                 // Tambah jumlah coin
+            Destroy(other.gameObject); // Hancurkan coin
+            if (cm != null)
+            {
+                cm.coinCount++; // Tambah coin
+            }
         }
     }
 

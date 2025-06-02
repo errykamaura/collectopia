@@ -44,8 +44,24 @@ public class CoinSpawner : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        // Spawn coin
         SpawnCoinsAbovePlatformTiles();
         SpawnExtraCoins();
+
+        // Hitung jumlah coin yang di-spawn dan laporkan ke CoinManager
+        GameObject gm = GameObject.Find("GameManager");
+        if (gm != null)
+        {
+            CoinManager cm = gm.GetComponent<CoinManager>();
+            if (cm != null)
+            {
+                cm.totalCoins = transform.childCount;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("GameManager tidak ditemukan di scene.");
+        }
     }
 
     void SpawnCoinsAbovePlatformTiles()
