@@ -8,16 +8,16 @@ public class CoinManager : MonoBehaviour
     public int coinCount = 0;              
     public int totalCoins = 0;              
     public TMP_Text coinText;               
-    public GameObject successImage;         
+    public GameObject successPanel;         
 
     private bool gameEnded = false;         
 
     void Start()
     {
         UpdateCoinUI();
-        if (successImage != null)
+        if (successPanel != null)
         {
-            successImage.SetActive(false);  // Sembunyikan UI gambar di awal
+            successPanel.SetActive(false);  // Sembunyikan UI gambar di awal
         }
     }
 
@@ -28,9 +28,9 @@ public class CoinManager : MonoBehaviour
         if (!gameEnded && coinCount >= totalCoins)
         {
             gameEnded = true;
-            if (successImage != null)
+            if (successPanel != null)
             {
-                successImage.SetActive(true);  // Tampilkan gambar "Game Berhasil"
+                successPanel.SetActive(true);  // Tampilkan gambar "Game Berhasil"
             }
             Debug.Log("Semua koin terkumpul. Game berhasil!");
         }
