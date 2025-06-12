@@ -1,44 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class CoinManager : MonoBehaviour
 {
-    public int coinCount = 0;              
-    public int totalCoins = 0;              
-    public TMP_Text coinText;               
-    public GameObject successPanel;         
+    public int coinCount = 0;
+    public int totalCoins = 0;
+    public TMP_Text coinText;
+    public GameObject successPanel;
 
-    private bool gameEnded = false;         
+    private bool gameEnded = false;
 
     void Start()
     {
         UpdateCoinUI();
         if (successPanel != null)
         {
-            successPanel.SetActive(false);  // Sembunyikan UI gambar di awal
+            successPanel.SetActive(false);  // Sembunyikan panel di awal
         }
     }
 
     void Update()
     {
-        UpdateCoinUI();
-
-        if (!gameEnded && coinCount >= totalCoins)
+        if (!gameEnded && coinCount >= totalCoins && totalCoins > 0)
         {
             gameEnded = true;
             if (successPanel != null)
-            {
-                successPanel.SetActive(true);  // Tampilkan gambar "Game Berhasil"
-            }
-            Debug.Log("Semua koin terkumpul. Game berhasil!");
+                successPanel.SetActive(true);
+
+            Debug.Log("Semua koin terkumpul!");
         }
     }
 
     public void AddCoin()
     {
         coinCount++;
+        UpdateCoinUI();
     }
 
     void UpdateCoinUI()

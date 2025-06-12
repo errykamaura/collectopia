@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement; // <--- Untuk restart scene
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 8f;
     public float jumpForce = 10f;
 
-    public CoinManager cm; // Pastikan ini di-assign di Inspector
+    public CoinManager cm;    // CoinManager untuk level 1
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D coll;
 
     [Header("Death Settings")]
-    public float fallThreshold = -10f; // Y batas jatuh, restart jika dilewati
+    public float fallThreshold = -10f;
 
     private void Awake()
     {
@@ -37,8 +37,17 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+        playerController = new PlayerController();
+    }
 
-        playerController = new PlayerController(); // Inisialisasi Input System
+    private void Start()
+    {
+        // Mendeteksi CoinManager atau CoinManager2 di GameManager
+        GameObject gm = GameObject.Find("GameManager");
+        if (gm != null)
+        {
+            cm = gm.GetComponent<CoinManager>();
+        }
     }
 
     private void OnEnable()
@@ -56,7 +65,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Input: PC atau Mobile
         if (Application.isMobilePlatform)
         {
             moveInput = new Vector2(mobileInputX, 0f);
@@ -66,7 +74,6 @@ public class PlayerMovement : MonoBehaviour
             moveInput = playerController.Movement.Move.ReadValue<Vector2>();
         }
 
-        // Cek apakah jatuh dari platform
         if (transform.position.y < fallThreshold)
         {
             RestartLevel();
@@ -159,17 +166,17 @@ public class PlayerMovement : MonoBehaviour
     // Fungsi Trigger untuk Coin
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Coin"))
+        if (other.CompareTag("Coin"))
         {
-            Destroy(other.gameObject); // Hancurkan coin
+            Destroy(other.gameObject);
             if (cm != null)
             {
-                cm.coinCount++; // Tambah coin
+                cm.AddCoin();
             }
         }
     }
 
-    // Restart level saat jatuh
+
     private void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

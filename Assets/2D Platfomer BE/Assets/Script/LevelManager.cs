@@ -3,23 +3,29 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    // Nama scene bisa diset langsung atau dari Inspector
-    public string nextLevelName = "level2";
     public string mainMenuName = "MainMenu";
 
-    // Dipanggil oleh tombol Continue
     public void LoadNextLevel()
     {
-        SceneManager.LoadScene(nextLevelName);
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextIndex = currentIndex + 1;
+
+        if (nextIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextIndex);
+        }
+        else
+        {
+            // Kalau sudah di level terakhir
+            SceneManager.LoadScene(mainMenuName);
+        }
     }
 
-    // Dipanggil oleh tombol Quit
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(mainMenuName);
     }
 
-    // Opsional: keluar aplikasi kalau di-build sebagai game standalone
     public void QuitGame()
     {
         Application.Quit();
